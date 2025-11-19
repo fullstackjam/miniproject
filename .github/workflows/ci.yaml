@@ -11,6 +11,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Skip CI if the commit is from github-actions bot (manifest update)
+    if: "!contains(github.event.head_commit.message, 'Automated manifest update')"
 
     steps:
     - name: Checkout
