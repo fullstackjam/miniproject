@@ -20,9 +20,11 @@ spec:
             - default
       steps:
       - setWeight: 10
-      - pause: { duration: 10 }
+      - pause: { duration: 30 }
       - setWeight: 30
-      - pause: { duration: 10 }
+      - pause: { duration: 30 }
+      - setWeight: 50
+      - pause: { duration: 30 }
       - setWeight: 100
   template:
     metadata:
@@ -33,7 +35,6 @@ spec:
       containers:
       - name: demo
         image: ghcr.io/fullstackjam/demo:v2
-        imagePullPolicy: Never
         env:
         - name: VERSION
           value: "v2"

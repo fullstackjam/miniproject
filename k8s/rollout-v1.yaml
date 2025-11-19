@@ -33,7 +33,6 @@ spec:
       containers:
       - name: demo
         image: ghcr.io/fullstackjam/demo:v1
-        imagePullPolicy: Never
         env:
         - name: VERSION
           value: "v1"
