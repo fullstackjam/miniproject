@@ -9,7 +9,9 @@ def index():
     return jsonify({
         "service": "demo",
         "version": version,
-        "message": "GitOps deployment successful!"
+        "message": "GitOps deployment successful!",
+        "deployment": "automated-canary",
+        "status": "healthy"
     })
 
 @app.route("/healthz")
