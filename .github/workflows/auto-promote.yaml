@@ -1,0 +1,71 @@
+name: Auto Promote Canary
+
+on:
+  schedule:
+    # 每小时运行一次
+    - cron: '0 * * * *'
+  workflow_dispatch: # 允许手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout config repo
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ github.repository_owner }}/miniproject-config
+        token: ${{ secrets.GH_PAT }}
+        path: config
+
+    - name: Check and promote canary
+      run: |
+        cd config
+        
+        # 获取 canary 的镜像 tag
+        CANARY_IMAGE=$(grep "image:" base/deployment-canary.yaml | awk '{print $2}')
+        STABLE_IMAGE=$(grep "image:" base/deployment-stable.yaml | awk '{print $2}')
+        
+        echo "Canary image: $CANARY_IMAGE"
+        echo "Stable image: $STABLE_IMAGE"
+        
+        # 如果 canary 和 stable 镜像相同，说明已经晋级过了
+        if [ "$CANARY_IMAGE" = "$STABLE_IMAGE" ]; then
+          echo "Canary and Stable are already in sync. Nothing to promote."
+          exit 0
+        fi
+        
+        # 获取 canary deployment 的最后修改时间
+        LAST_COMMIT_TIME=$(git log -1 --format=%ct -- base/deployment-canary.yaml)
+        CURRENT_TIME=$(date +%s)
+        TIME_DIFF=$((CURRENT_TIME - LAST_COMMIT_TIME))
+        
+        # 4 小时 = 14400 秒
+        PROMOTION_THRESHOLD=14400
+        
+        echo "Time since last canary update: $((TIME_DIFF / 3600)) hours"
+        
+        if [ $TIME_DIFF -gt $PROMOTION_THRESHOLD ]; then
+          echo "Canary has been running for more than 4 hours. Promoting to stable..."
+          
+          # 更新 stable deployment 的镜像为 canary 的镜像
+          sed -i "s|image:.*|image: $CANARY_IMAGE|g" base/deployment-stable.yaml
+          
+          # 提交并推送
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add base/deployment-stable.yaml
+          git commit -m "chore: auto-promote canary to stable
+
+Canary image: $CANARY_IMAGE
+Promotion after: $((TIME_DIFF / 3600)) hours
+
+🤖 Automated promotion by GitHub Actions"
+          git push
+          
+          echo "✅ Promotion completed!"
+        else
+          echo "Canary has been running for less than 4 hours. Skipping promotion."
+        fi
