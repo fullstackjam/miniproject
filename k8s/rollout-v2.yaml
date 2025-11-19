@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
       - name: demo
-        image: ghcr.io/fullstackjam/miniproject:COMMIT_SHA
+        image: ghcr.io/fullstackjam/miniproject:2f879a4
         imagePullPolicy: Always
         env:
         - name: VERSION
