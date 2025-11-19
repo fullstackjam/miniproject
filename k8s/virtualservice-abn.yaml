@@ -1,0 +1,57 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: demo-abn-vs
+  namespace: demo
+spec:
+  hosts:
+  - demo.demo.svc.cluster.local
+  - demo-experiment-a.demo.svc.cluster.local
+  - demo-experiment-b.demo.svc.cluster.local
+  - demo-experiment-c.demo.svc.cluster.local
+  http:
+  # Route 1: x-experiment: a → Experiment A
+  - name: experiment-a
+    match:
+    - headers:
+        x-experiment:
+          exact: "a"
+    route:
+    - destination:
+        host: demo-experiment-a
+      weight: 100
+
+  # Route 2: x-experiment: b → Experiment B
+  - name: experiment-b
+    match:
+    - headers:
+        x-experiment:
+          exact: "b"
+    route:
+    - destination:
+        host: demo-experiment-b
+      weight: 100
+
+  # Route 3: x-experiment: c → Experiment C
+  - name: experiment-c
+    match:
+    - headers:
+        x-experiment:
+          exact: "c"
+    route:
+    - destination:
+        host: demo-experiment-c
+      weight: 100
+
+  # Route 4: Default traffic → Distributed across all experiments
+  - name: default
+    route:
+    - destination:
+        host: demo-experiment-a
+      weight: 34
+    - destination:
+        host: demo-experiment-b
+      weight: 33
+    - destination:
+        host: demo-experiment-c
+      weight: 33

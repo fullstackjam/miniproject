@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-experiment-c
+  namespace: demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo
+      experiment: c
+  template:
+    metadata:
+      labels:
+        app: demo
+        experiment: c
+        version: experiment-c
+    spec:
+      containers:
+      - name: demo
+        image: ghcr.io/fullstackjam/miniproject:4fdb863
+        imagePullPolicy: Always
+        env:
+        - name: VERSION
+          value: "experiment-c"
+        - name: EXPERIMENT
+          value: "C"
+        ports:
+        - containerPort: 8080

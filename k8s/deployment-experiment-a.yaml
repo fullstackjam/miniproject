@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-experiment-a
+  namespace: demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: demo
+      experiment: a
+  template:
+    metadata:
+      labels:
+        app: demo
+        experiment: a
+        version: experiment-a
+    spec:
+      containers:
+      - name: demo
+        image: ghcr.io/fullstackjam/miniproject:4fdb863
+        imagePullPolicy: Always
+        env:
+        - name: VERSION
+          value: "experiment-a"
+        - name: EXPERIMENT
+          value: "A"
+        ports:
+        - containerPort: 8080
