@@ -6,7 +6,11 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     version = os.getenv("VERSION", "unknown")
-    return jsonify({"service": "demo", "version": version})
+    return jsonify({
+        "service": "demo",
+        "version": version,
+        "message": "GitOps deployment successful!"
+    })
 
 @app.route("/healthz")
 def health():
