@@ -13,7 +13,9 @@ def index():
         "experiment": experiment,
         "message": f"A/B/N Testing - Experiment {experiment}",
         "deployment": "multi-variant",
-        "status": "healthy"
+        "status": "healthy",
+        "gitops_enabled": True,
+        "automation": "full"
     })
 
 @app.route("/healthz")
