@@ -19,24 +19,26 @@
 ### Complete Automation Flow:
 
 ```
-1. Developer builds & pushes image
-   └─> docker build -t ghcr.io/fullstackjam/demo:v4 ./app
-   └─> docker push ghcr.io/fullstackjam/demo:v4
+1. Developer commits code change
+   └─> git commit -m "Add new feature"
+   └─> git push origin main
 
-2. Argo CD Image Updater detects new image
-   └─> Polls GHCR every 2 minutes
-   └─> Finds new tag v4
-   └─> Updates ArgoCD Application spec with new image
+2. GitHub Actions CI workflow triggers
+   └─> Builds Docker image tagged with commit SHA
+   └─> Pushes image to ghcr.io/fullstackjam/demo:<SHA>
+   └─> Updates k8s/rollout-v2.yaml with new image tag
+   └─> Commits and pushes manifest change back to git
 
-3. ArgoCD syncs the change
-   └─> Pulls latest manifests from Git
-   └─> Applies updated Rollout with v4 image
+3. ArgoCD detects git change
+   └─> Polls repository every 3 minutes (or instant with webhook)
+   └─> Sees new commit with updated manifest
+   └─> Auto-syncs the change
 
 4. Argo Rollouts performs canary deployment
-   └─> Step 1: 10% traffic to v4 (pause 30s)
-   └─> Step 2: 30% traffic to v4 (pause 30s)
-   └─> Step 3: 50% traffic to v4 (pause 30s)
-   └─> Step 4: 100% traffic to v4 (promoted!)
+   └─> Step 1: 10% traffic to new version (pause 30s)
+   └─> Step 2: 30% traffic to new version (pause 30s)
+   └─> Step 3: 50% traffic to new version (pause 30s)
+   └─> Step 4: 100% traffic to new version (promoted!)
 
 5. Istio manages traffic splitting
    └─> VirtualService updated by Argo Rollouts
