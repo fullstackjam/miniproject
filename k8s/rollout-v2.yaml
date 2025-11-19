@@ -28,6 +28,8 @@ spec:
       - setWeight: 100
   template:
     metadata:
+      annotations:
+        commit-sha: "8f0faf1"
       labels:
         app: demo
         version: latest
