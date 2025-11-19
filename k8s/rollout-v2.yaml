@@ -28,15 +28,13 @@ spec:
       - setWeight: 100
   template:
     metadata:
-      annotations:
-        commit-sha: "8f0faf1"
       labels:
         app: demo
         version: latest
     spec:
       containers:
       - name: demo
-        image: ghcr.io/fullstackjam/miniproject:latest
+        image: ghcr.io/fullstackjam/miniproject:COMMIT_SHA
         imagePullPolicy: Always
         env:
         - name: VERSION
