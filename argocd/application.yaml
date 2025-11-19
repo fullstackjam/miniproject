@@ -3,19 +3,12 @@ kind: Application
 metadata:
   name: demo-app
   namespace: argocd
-  annotations:
-    argocd-image-updater.argoproj.io/image-list: demo=ghcr.io/fullstackjam/demo
-    argocd-image-updater.argoproj.io/demo.update-strategy: latest
-    argocd-image-updater.argoproj.io/demo.allow-tags: regexp:^v.*
-    argocd-image-updater.argoproj.io/demo.force-update: "true"
-    argocd-image-updater.argoproj.io/write-back-method: argocd
-    argocd-image-updater.argoproj.io/write-back-target: "kustomization:k8s"
 spec:
   project: default
   source:
-    repoURL: https://github.com/fullstackjam/miniproject.git
+    repoURL: https://github.com/fullstackjam/miniproject-config.git
     targetRevision: main
-    path: k8s
+    path: base
   destination:
     server: https://kubernetes.default.svc
     namespace: demo
