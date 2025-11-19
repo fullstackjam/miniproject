@@ -42,8 +42,8 @@ jobs:
         CURRENT_TIME=$(date +%s)
         TIME_DIFF=$((CURRENT_TIME - LAST_COMMIT_TIME))
         
-        # 5 minutes = 300 seconds (for testing, production should use 14400 = 4 hours)
-        PROMOTION_THRESHOLD=300
+        # 12 hours = 43200 seconds
+        PROMOTION_THRESHOLD=43200
         
         echo "Time since last canary update: $((TIME_DIFF / 3600)) hours"
         
