@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/fullstackjam/miniproject-config.git
+    repoURL: https://github.com/fullstackjam/miniproject.git
     targetRevision: main
-    path: base
+    path: k8s
   destination:
     server: https://kubernetes.default.svc
     namespace: demo
