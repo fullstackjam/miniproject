@@ -42,15 +42,15 @@ jobs:
 
     - name: Update manifests in config repo
       run: |
-        # Update image tag in rollout deployment
-        sed -i "s|image: ghcr.io/${{ github.repository_owner }}/miniproject:.*|image: ghcr.io/${{ github.repository_owner }}/miniproject:${{ github.sha }}|g" config/base/rollout-v2.yaml
+        # Update image tag in canary deployment
+        sed -i "s|image: ghcr.io/${{ github.repository_owner }}/miniproject:.*|image: ghcr.io/${{ github.repository_owner }}/miniproject:${{ github.sha }}|g" config/base/deployment-canary.yaml
 
         # Commit and push manifest changes to config repo
         cd config
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add base/rollout-v2.yaml
-        git commit -m "Update image to ${{ github.sha }}
+        git add base/deployment-canary.yaml
+        git commit -m "Update canary image to ${{ github.sha }}
 
         Automated manifest update by CI
 
