@@ -30,13 +30,13 @@ spec:
     metadata:
       labels:
         app: demo
-        version: v2
+        version: v3
     spec:
       containers:
       - name: demo
-        image: ghcr.io/fullstackjam/demo:v2
+        image: ghcr.io/fullstackjam/demo:v3
         env:
         - name: VERSION
-          value: "v2"
+          value: "v3"
         ports:
         - containerPort: 8080
