@@ -6,13 +6,14 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     version = os.getenv("VERSION", "unknown")
+    experiment = os.getenv("EXPERIMENT", "default")
     return jsonify({
         "service": "demo",
         "version": version,
-        "message": "Fully automated GitOps!",
-        "deployment": "automated-canary",
-        "status": "healthy",
-        "automation": "complete"
+        "experiment": experiment,
+        "message": f"A/B/N Testing - Experiment {experiment}",
+        "deployment": "multi-variant",
+        "status": "healthy"
     })
 
 @app.route("/healthz")
