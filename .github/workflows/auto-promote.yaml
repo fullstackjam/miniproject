@@ -58,11 +58,11 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add base/deployment-stable.yaml
           git commit -m "chore: auto-promote canary to stable
-
-Canary image: $CANARY_IMAGE
-Promotion after: $((TIME_DIFF / 3600)) hours
-
-🤖 Automated promotion by GitHub Actions"
+          
+          Canary image: $CANARY_IMAGE
+          Promotion after: $((TIME_DIFF / 3600)) hours
+          
+          🤖 Automated promotion by GitHub Actions"
           git push
           
           echo "✅ Promotion completed!"
