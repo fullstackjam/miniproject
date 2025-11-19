@@ -2,9 +2,9 @@ name: Auto Promote Canary
 
 on:
   schedule:
-    # 每小时运行一次
+    # Run once every hour
     - cron: '0 * * * *'
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch: # Allow manual trigger
 
 permissions:
   contents: write
@@ -24,25 +24,25 @@ jobs:
       run: |
         cd config
         
-        # 获取 canary 的镜像 tag
+        # Get canary image tag
         CANARY_IMAGE=$(grep "image:" base/deployment-canary.yaml | awk '{print $2}')
         STABLE_IMAGE=$(grep "image:" base/deployment-stable.yaml | awk '{print $2}')
         
         echo "Canary image: $CANARY_IMAGE"
         echo "Stable image: $STABLE_IMAGE"
         
-        # 如果 canary 和 stable 镜像相同，说明已经晋级过了
+        # If canary and stable images are the same, it means promotion has already occurred
         if [ "$CANARY_IMAGE" = "$STABLE_IMAGE" ]; then
           echo "Canary and Stable are already in sync. Nothing to promote."
           exit 0
         fi
         
-        # 获取 canary deployment 的最后修改时间
+        # Get the last modification time of the canary deployment
         LAST_COMMIT_TIME=$(git log -1 --format=%ct -- base/deployment-canary.yaml)
         CURRENT_TIME=$(date +%s)
         TIME_DIFF=$((CURRENT_TIME - LAST_COMMIT_TIME))
         
-        # 5 分钟 = 300 秒 (测试用，生产环境应该用 14400 = 4小时)
+        # 5 minutes = 300 seconds (for testing, production should use 14400 = 4 hours)
         PROMOTION_THRESHOLD=300
         
         echo "Time since last canary update: $((TIME_DIFF / 3600)) hours"
@@ -50,10 +50,10 @@ jobs:
         if [ $TIME_DIFF -gt $PROMOTION_THRESHOLD ]; then
           echo "Canary has been running for more than 4 hours. Promoting to stable..."
           
-          # 更新 stable deployment 的镜像为 canary 的镜像
+          # Update stable deployment image to canary image
           sed -i "s|image:.*|image: $CANARY_IMAGE|g" base/deployment-stable.yaml
           
-          # 提交并推送
+          # Commit and push
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add base/deployment-stable.yaml
