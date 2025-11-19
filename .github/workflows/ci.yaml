@@ -52,7 +52,7 @@ jobs:
         git add base/rollout-v2.yaml
         git commit -m "Update image to ${{ github.sha }}
 
-Automated manifest update by CI
+        Automated manifest update by CI
 
-🤖 Deployed by GitHub Actions" || echo "No changes to commit"
+        🤖 Deployed by GitHub Actions" || echo "No changes to commit"
         git push || echo "Nothing to push"
